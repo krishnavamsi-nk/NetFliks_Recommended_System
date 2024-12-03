@@ -130,9 +130,23 @@ def recommend():
     cast_details = {cast_names[i]:[cast_ids[i], cast_profiles[i], cast_bdays[i], cast_places[i], cast_bios[i]] for i in range(len(cast_places))}
 
     # web scraping to get user reviews from IMDB site
-    sauce = urllib.request.urlopen('https://www.imdb.com/title/{}/reviews?ref_=tt_ov_rt'.format(imdb_id)).read()
-    soup = bs.BeautifulSoup(sauce,'lxml')
-    soup_result = soup.find_all("div",{"class":"text show-more__control"})
+    # sauce = urllib.request.urlopen('https://www.imdb.com/title/{}/reviews?ref_=tt_ov_rt'.format(imdb_id)).read()
+
+    # url = 'https://www.imdb.com/title/{}/reviews?ref_=tt_ov_rt'.format(imdb_id)
+    # headers = {
+    # 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+    # }
+
+
+    # request = urllib.request.Request(url, headers=headers)
+    # response = urllib.request.urlopen(request).read()
+
+    url = f'https://www.imdb.com/title/{imdb_id}/reviews?ref_=tt_ov_rt'
+    response = requests.get(url)
+    sauce = response.text  # Extract the HTML content
+
+    soup = bs.BeautifulSoup(sauce, 'lxml')  # Use 'sauce' here, not 'response'
+    soup_result = soup.find_all("div", {"class": "text show-more__control"})
 
     reviews_list = [] # list of reviews
     reviews_status = [] # list of comments (good or bad)
@@ -155,3 +169,4 @@ def recommend():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
